@@ -1,0 +1,28 @@
+services:
+  
+  fhci:
+    build:
+      context: .
+    container_name: fhir_tv
+    ports:
+      - $LOCAL_PORT:$DOCKER_PORT
+    depends_on:
+      - postgresdb
+    env_file: ./.env
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgresdb:$POSTGRES_PORT/$DB_NAME
+      - SPRING_DATASOURCE_USERNAME=$USER
+      - SPRING_DATASOURCE_PASSWORD=$PASSWORD
+  
+  postgresdb:
+    image: postgres
+    container_name: fhir_tv_db
+    restart: unless-stopped
+    env_file: ./.env
+    environment:
+      - POSTGRES_DB=$DB_NAME
+      - POSTGRES_USER=$USER
+      - POSTGRES_PASSWORD=$PASSWORD
+    ports:
+      - $POSTGRES_PORT:$POSTGRES_PORT
+
